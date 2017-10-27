@@ -10,7 +10,7 @@ namespace BudgetManager2017.Controllers
     {
         public ActionResult Index()
         {
-            ViewBag.Title = "Home Page";
+            ViewBag.Title = "Fetch Transactions";
 
             return View();
         }
