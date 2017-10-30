@@ -11,6 +11,7 @@ namespace BudgetManager2017.DataAccess
 {
     public class DAL
     {
+
         static public SqlConnection connection = null;
         private static List<Transaction> transactionslist = new List<Transaction>();
         private static bool _ListIsCleared { get; set; }
@@ -19,6 +20,8 @@ namespace BudgetManager2017.DataAccess
             get { return transactionslist; }
             set { transactionslist = value; }
         }
+        
+
 
         public static void Open()
         {
