@@ -1,56 +1,31 @@
 ﻿<div class="jumbotron">
-    <h1>Fetch Transactions</h1>
-    <p class="lead">Desciption Goes here</p>
+    <h1>Fetch Transactions & Return Json</h1>
+    <p class="lead">Seek transactions within an estimated period of time</p>
+    <p class="lead">To make your search :</p>
+    <p class="lead">1. select time from and time to.</p>
+    <p class="lead">2. Press the seek-button!</p>
 </div>
+
 <div class="row">
-
-@foreach (var item in ViewBag.Transactions)
-{
-    <table style="padding:2%;">
-        <thead>
-            <tr>
-                <th style=" border: 1px solid black;">TransactonID</th>
-                <th style=" border: 1px solid black;">Amount</th>
-                <th style=" border: 1px solid black;">Date</th>
-                <th style=" border: 1px solid black;">Description</th>
-                <th style=" border: 1px solid black;">SubcatagoryID</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td style=" border: 1px solid black;">@item.TransactionID</td>
-                <td style=" border: 1px solid black;">@item.Amount</td>
-                <td style=" border: 1px solid black;">@item.Date</td>
-                <td style=" border: 1px solid black;">@item.Description</td>
-                <td style=" border: 1px solid black;">@item.SubCat</td>
-                <td>
-                    @using (Html.BeginForm("DeleteCommand", "Home", FormMethod.Post, new { id = "submitForm" }))
-                    {
-                        <button type="submit" id="btnDelete" name="Command" value="@item.TransactionID">Delete</button>
-                    }
-                </td>
-                <td>
-                    @using (Html.BeginForm("UpdateCommand", "Home", FormMethod.Post, new { id = "submitForm" }))
-                    {
-                        <button type="submit" id="btnUpdate" name="Command" value="@item.TransactionID">Update</button>
-                    }
-                </td>
-
-            </tr>
-        </tbody>
-    </table>
-}
-    @*<div class="col-md-4">
-        <h2>HeadLine</h2>
-        <p>Desciption Goes here</p>
+    <div class="col-md-12" style="background-color: #edeff1;">
+        <br />
+            @using (Html.BeginForm("TimeSelector", "Home", FormMethod.Post, new { id = "submitForm" }))
+            {
+                <table>
+                    <tr>
+                        <td>
+                            <label>Dato Fra </label>
+                            <input type="datetime-local" value="@Html.TextBox("dateTime001")"/>
+                        </td>
+                        <td>
+                            <label>Dato Fra <input type="datetime-local" @Html.TextBox("dateTime002") /></label>
+                        </td>
+                        <td>
+                            <button type="submit" id="btnUpdate" name="Command" value="@ViewBag.date">Søg</button>
+                        </td>
+                    </tr>
+                </table>
+            }
+        <br />
     </div>
-    <div class="col-md-4">
-        <h2>HeadLines</h2>
-        <p>Description goes here</p>
-        
-    </div>
-    <div class="col-md-4">
-        <h2>Headline</h2>
-        <p>Description goes here</p>
-    </div>*@
 </div>

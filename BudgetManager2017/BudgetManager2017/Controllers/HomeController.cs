@@ -10,26 +10,30 @@ namespace BudgetManager2017.Controllers
 {
     public class HomeController : Controller
     {
+        
+        [HttpGet]
         public ActionResult Index()
         {
             ViewBag.Title = "Fetch Transactions";
-            Transaction transaction = new Transaction();
-            int transactonID, subcatagoryID;
-            double amount;
-            DateTime Date;
-            String Description;
+            return View();
+        }
+        [HttpPost]
+        public ActionResult TimeSelector(Transaction dt)
+        {
+            string dt001 = Request["dateTime001"];
+            string dt002 = Request["dateTime002"];
 
-            transactonID = transaction.TransactionID;
-            amount = transaction.Amount;
-            Date = transaction.Date;
-            Description = transaction.Description;
-            subcatagoryID = transaction.SubCat;
+            dt.Transactions.Add(dt001);
+            dt.Transactions.Add(dt002);
+
             DAL.Open();
-            DAL.Select();
+            DAL.Select(dt);
             ViewBag.Transactions = DAL.Transactionslist;
             DAL.Close();
 
-            return View();
+            return View("TimeSelector");
         }
+        
     }
+
 }

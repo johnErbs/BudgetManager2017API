@@ -7,6 +7,15 @@ namespace BudgetManager2017.Models
 {
     public class Transaction
     {
+        private List<string> transactions = new List<string>();
+
+        public List<string> Transactions
+        {
+            get { return transactions; }
+            set { transactions = value; }
+        }
+
+
         public Transaction()
         {
             Date = DateTime.Now;

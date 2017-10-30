@@ -33,6 +33,7 @@ namespace BudgetManager2017.DataAccess
             }
         }
 
+
         public static void Close()
         {
             try
@@ -45,52 +46,41 @@ namespace BudgetManager2017.DataAccess
             }
 
         }
-
-        public static void Select()
+        internal static void Select(Transaction transaction)
         {
-            SqlCommand command1 = new SqlCommand("SELECT * FROM Transactions", connection);
+            transactionslist.Clear();
+            _ListIsCleared = true;
+
+            SqlCommand readCmd = new SqlCommand("SELECT * FROM TRANSACTIONS WHERE DATE >= @dateTime001 AND DATE < @dateTime002", connection);
+            //Params
+            readCmd.Parameters.Add(CreateParam("@dateTime001", transaction.Transactions[0], SqlDbType.DateTime));
+            readCmd.Parameters.Add(CreateParam("@dateTime002", transaction.Transactions[1], SqlDbType.DateTime));
+
             try
             {
-                using (SqlDataReader DR = command1.ExecuteReader())
+                SqlDataReader dataReader = readCmd.ExecuteReader();
+
+                while (dataReader.Read())
                 {
-                    while (DR.Read())     //Mens DR Læser...
+                    if (_ListIsCleared)
                     {
-                        //Her addes der til liste fra 1. kollone i TableName.
-                        int id = DR.GetInt32(0);
-                        double amount = DR.GetDouble(1);
-                        DateTime date = DR.GetDateTime(2);
-                        string description = DR.GetString(3);
-                        int subID = DR.GetInt32(4);
+                        //Addes der til liste fra 1. kollone i TableName.
+                        int id = dataReader.GetInt32(0);
+                        double amount = dataReader.GetDouble(1);
+                        DateTime date = dataReader.GetDateTime(2);
+                        string description = dataReader.GetString(3);
+                        int subID = dataReader.GetInt32(4);
 
-
-                        for (int i = 0; i < transactionslist.Count; i++)
-                        {
-
-                            if (transactionslist[i].TransactionID == id)
-                            {
-                                transactionslist.Clear();
-                                _ListIsCleared = true;
-                            }
-                        }
-                        if (transactionslist.Count == 0)
-                        {
-                            _ListIsCleared = true;
-                        }
-                        if (_ListIsCleared)
-                        {
-                            transactionslist.Add(new Transaction { TransactionID = id, Amount = amount, Date = date, Description = description, SubCat = subID });
-                        }
+                       transactionslist.Add(new Transaction { TransactionID = id, Amount = amount, Date = date, Description = description, SubCat = subID });
                     }
-
-                    _ListIsCleared = false;
                 }
             }
-
-            catch (SqlException ex)
+            catch (Exception ex)
             {
-
+                throw ex;
             }
         }
+
         public static SqlParameter CreateParam(string name, object value, SqlDbType type)
         {
             SqlParameter param = new SqlParameter(name, type);
