@@ -1,9 +1,9 @@
 ﻿<div class="jumbotron">
-    <h1>Fetch Transactions & Return Json</h1>
-    <p class="lead">Seek transactions within an estimated period of time</p>
-    <p class="lead">To make your search :</p>
-    <p class="lead">1. select time from and time to.</p>
-    <p class="lead">2. Press the seek-button!</p>
+    <h2>Fetch Transactions & Return A Json Object</h2>
+    <p class="lead">Search for transactions within two dates.</p>
+    <p class="lead">To make your search:</p>
+    <p class="lead">1. Select the dates you want to search from and to.</p>
+    <p class="lead">2. Press the "Search" button.</p>
 </div>
 
 <div class="row">
@@ -14,25 +14,18 @@
                 <table>
                     <tr>
                         <td>
-                            <label>Dato Fra </label>
-                            <input type="datetime-local" value="@Html.TextBox("dateTime001")"/>
+                            <label>Date From: &nbsp; </label>
+                            <input type="datetime-local" value=@Html.TextBox("dateTime001")
                         </td>
                         <td>
-                            <label>Dato Fra <input type="datetime-local" @Html.TextBox("dateTime002") /></label>
+                            <label> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Date To: &nbsp;</label>
+                            <input type="datetime-local" @Html.TextBox("dateTime002") &nbsp; &nbsp; &nbsp;
                         </td>
                         <td>
-                            <button type="submit" id="btnUpdate" name="Command" value="seek">Seek</button>
-                        </td>
-                        <td>
-                                <button type="submit" id="btnUpdate" name="Command" value="getJson">Get Json</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <button type="submit" id="btnUpdate" name="Command" value="JsonData">Get Json-Data</button>
-                        </td>
-                        <td>
-                            <button type="submit" id="btnUpdate" name="Command" value="Description">Description</button>
+                            <button type="submit" id="btnUpdate" name="Command" value="search">Search</button> &nbsp;
+                            <button type="submit" id="btnUpdate" name="Command" value="getJson">Get Json</button> &nbsp;
+                            <button type="submit" id="btnUpdate" name="Command" value="JsonData">Get Json-Data</button> &nbsp;
+                            <button type="submit" id="btnUpdate" name="Command" value="Description">Description</button> &nbsp;
                         </td>
                     </tr>
                 </table>
