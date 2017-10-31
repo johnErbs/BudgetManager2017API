@@ -30,13 +30,56 @@ namespace BudgetManager2017.Controllers
             else if (Command == "getJson")
             {
                 GenerateDB(dt);
-                var jsonObj = DAL.Transactionslist;
-                return Json(jsonObj);
+                
+                return RedirectToAction("Json");
+            }
+            else if (Command == "JsonData")
+            {
+                return RedirectToAction("GeneralInformation");
+            }
+            else if (Command == "Description")
+            {
+                return RedirectToAction("Description");
             }
             return View("TimeSelector");
         }
-
         
+        public ActionResult Json()
+        {
+            var jsonObj = DAL.Transactionslist;
+            return Json(jsonObj, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult GeneralInformation()
+        {
+            Logging();
+
+            DAL.Open();
+            DAL.Select001();
+            DAL.Close();
+            var jsonObj = DAL.Transactions;
+            return Json(jsonObj, JsonRequestBehavior.AllowGet);
+        }
+
+        private void Logging()
+        {
+
+        }
+        [HttpGet]
+        public ActionResult Description()
+        {
+
+            List<string> Descriptions = new List<string>();
+            DAL.Open();
+            DAL.ReadDescription(ref Descriptions);
+            DAL.Close();
+            var jsonObj = Descriptions;
+            return Json(jsonObj, JsonRequestBehavior.AllowGet);
+        }
+        //[HttpPost]
+        //public JsonResult postDscription()
+        //{
+
+        //}
         private void GenerateDB(Transaction dt)
         {
             string dt001 = Request["dateTime001"];
@@ -48,8 +91,8 @@ namespace BudgetManager2017.Controllers
             DAL.Open();
             DAL.Select(dt);
             DAL.Close();
-            
         }
+
     }
 
 }

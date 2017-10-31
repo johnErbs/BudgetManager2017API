@@ -13,14 +13,20 @@ namespace BudgetManager2017.DataAccess
     {
 
         static public SqlConnection connection = null;
-        private static List<Transaction> transactionslist = new List<Transaction>();
         private static bool _ListIsCleared { get; set; }
+        private static List<Transaction> transactionslist = new List<Transaction>();
         public static List<Transaction> Transactionslist
         {
             get { return transactionslist; }
             set { transactionslist = value; }
         }
-        
+        private static List<Transaction> transactions = new List<Transaction>();
+        public static List<Transaction> Transactions
+        {
+            get { return transactionslist; }
+            set { transactionslist = value; }
+        }
+
 
 
         public static void Open()
@@ -76,6 +82,56 @@ namespace BudgetManager2017.DataAccess
 
                        transactionslist.Add(new Transaction { TransactionID = id, Amount = amount, Date = date, Description = description, SubCat = subID });
                     }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        internal static void ReadDescription(ref List<string> descriptions)
+        {
+            SqlCommand readCommand = new SqlCommand("SELECT DESCRIPTION FROM TRANSACTIONS", connection);
+            try
+            {
+                SqlDataReader dataReader = readCommand.ExecuteReader();
+
+                while (dataReader.Read())
+                {
+                    string descr = dataReader["description"].ToString();
+                    descriptions.Add(descr);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
+        }
+
+        internal static void Select001()
+        {
+            Transactions.Clear();
+
+            SqlCommand readCmd = new SqlCommand("SELECT * FROM TRANSACTIONS", connection);
+
+            try
+            {
+                SqlDataReader dataReader = readCmd.ExecuteReader();
+
+                while (dataReader.Read())
+                {
+                    
+                        //Addes der til liste fra 1. kollone i TableName.
+                        int id = dataReader.GetInt32(0);
+                        double amount = dataReader.GetDouble(1);
+                        DateTime date = dataReader.GetDateTime(2);
+                        string description = dataReader.GetString(3);
+                        int subID = dataReader.GetInt32(4);
+
+                        Transactions.Add(new Transaction { TransactionID = id, Amount = amount, Date = date, Description = description, SubCat = subID });
                 }
             }
             catch (Exception ex)
