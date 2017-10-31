@@ -90,16 +90,18 @@ namespace BudgetManager2017.DataAccess
             }
         }
 
-        internal static void ReadDescription(ref List<string> descriptions)
+        internal static void ReadDescription(ref List<string> descriptions, ref Dictionary<string, string> descriptId)
         {
-            SqlCommand readCommand = new SqlCommand("SELECT DESCRIPTION FROM TRANSACTIONS", connection);
+            SqlCommand readCommand = new SqlCommand("SELECT * FROM TRANSACTIONS", connection);
             try
             {
                 SqlDataReader dataReader = readCommand.ExecuteReader();
 
                 while (dataReader.Read())
                 {
+                    string id = dataReader["transactionid"].ToString();
                     string descr = dataReader["description"].ToString();
+                    descriptId.Add(id, descr);
                     descriptions.Add(descr);
                 }
             }

@@ -69,24 +69,24 @@ namespace BudgetManager2017.Controllers
         [HttpGet]
         public ActionResult Description()
         {
-                List<string> Descriptions = new List<string>();
-                DAL.Open();
-                DAL.ReadDescription(ref Descriptions);
-                DAL.Close();
-                var jsonObj = Descriptions;
-            var JsonObj = Json(jsonObj);
-            PosDescript(JsonObj);
+            Dictionary<string, string> descriptId = new Dictionary<string, string>();
+            List<string> Descriptions = new List<string>();
 
-            return Json(JsonObj, JsonRequestBehavior.AllowGet);
+            DAL.Open();
+            DAL.ReadDescription(ref Descriptions, ref descriptId);
+            DAL.Close();
+            var jsonObj = descriptId;//Obs jsonObject kan asignes til enten [descriptId] for key value pair eller til [Descriptions] for en enkelt beskrivelse
+            PosDescript(Json(jsonObj));
+
+            return Json(jsonObj, JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
-        public ActionResult PosDescript(object JsonObj)
+        public ActionResult PosDescript(object jsonObj)
         {
             Dictionary<string, object> jObj = new Dictionary<string, object>();
-            jObj.Add("Description", JsonObj);
+            jObj.Add("Description", jsonObj);
 
-            return this.RedirectAndPost("localhost:3000/Description", jObj);
-            //http://image-search9000.herokuapp.com/description
+            return this.RedirectAndPost("http://image-search9000.herokuapp.com/description", jObj);
         }
 
 
