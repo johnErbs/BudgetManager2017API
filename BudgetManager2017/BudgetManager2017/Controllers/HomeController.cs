@@ -3,9 +3,11 @@ using BudgetManager2017.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Web;
 using System.Web.Mvc;
+using Fluentx.Mvc;
 
 namespace BudgetManager2017.Controllers
 {
@@ -67,19 +69,39 @@ namespace BudgetManager2017.Controllers
         [HttpGet]
         public ActionResult Description()
         {
+                List<string> Descriptions = new List<string>();
+                DAL.Open();
+                DAL.ReadDescription(ref Descriptions);
+                DAL.Close();
+                var jsonObj = Descriptions;
+            var JsonObj = Json(jsonObj);
+            PosDescript(JsonObj);
 
-            List<string> Descriptions = new List<string>();
-            DAL.Open();
-            DAL.ReadDescription(ref Descriptions);
-            DAL.Close();
-            var jsonObj = Descriptions;
-            return Json(jsonObj, JsonRequestBehavior.AllowGet);
+            return Json(JsonObj, JsonRequestBehavior.AllowGet);
         }
-        //[HttpPost]
-        //public JsonResult postDscription()
-        //{
+        [HttpPost]
+        public ActionResult PosDescript(object JsonObj)
+        {
+            Dictionary<string, object> jObj = new Dictionary<string, object>();
+            jObj.Add("Description", JsonObj);
 
-        //}
+            return this.RedirectAndPost("localhost:3000/Description", jObj);
+            //http://image-search9000.herokuapp.com/description
+        }
+
+
+            //return Json(jsonObj, JsonRequestBehavior.AllowGet);
+
+
+
+        //List<string> Descriptions = new List<string>();
+        //DAL.Open();
+        //DAL.ReadDescription(ref Descriptions);
+        //DAL.Close();
+        //var jsonObj = Descriptions;
+
+
+
         private void GenerateDB(Transaction dt)
         {
             string dt001 = Request["dateTime001"];
