@@ -21,7 +21,7 @@ namespace BudgetManager2017.Controllers
         
         public ActionResult TimeSelector(string Command, Transaction dt)
         {
-            if (Command == "seek")
+            if (Command == "search")
             {
                 GenerateDB(dt);
                 ViewBag.Transactions = DAL.Transactionslist;
