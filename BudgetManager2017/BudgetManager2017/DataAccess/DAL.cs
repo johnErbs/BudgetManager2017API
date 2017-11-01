@@ -113,6 +113,22 @@ namespace BudgetManager2017.DataAccess
 
         }
 
+        internal static void Insert(string content)
+        {
+            SqlCommand create = new SqlCommand("INSERT INTO TRANSACTIONS", connection);
+            create.Parameters.Add(CreateParam("@img", content, SqlDbType.Image));
+
+            try
+            {
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
         internal static void Select001()
         {
             Transactions.Clear();

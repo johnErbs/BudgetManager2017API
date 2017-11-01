@@ -81,9 +81,9 @@ namespace BudgetManager2017.Controllers
         public void postLog(string logged)
         {
             string URI = "https://islogapi.herokuapp.com/";
-            string Action = "Action=user logged in";
+            string action = "action=user logged in";
             //client.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
-            string HtmlResult = client.UploadString(URI, Action);
+            string HtmlResult = client.UploadString(URI, action);
         }
 
         
@@ -96,12 +96,13 @@ namespace BudgetManager2017.Controllers
 
             DAL.Open();
             DAL.ReadDescription(ref descriptions, ref descriptId);
-            DAL.Close();
             var jsonObj = descriptions;//Obs jsonObject kan asignes til enten [descriptId] for key value pair eller til [Descriptions] for en enkelt beskrivelse
             //string concat = String.Join(" ", Descriptions.ToArray());
-            PostDescript(descriptions);
+            PostDescript(descriptions);//Sender data
             string content="";
-            JsonStringBody(content);
+            JsonStringBody(content);//Henter data
+            DAL.Insert(content);
+            DAL.Close();
             return Json(jsonObj, JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
@@ -112,7 +113,7 @@ namespace BudgetManager2017.Controllers
 
             foreach (string description in descriptions)
             {
-                string Action = description;
+                string Action = $"Beskrevelse={description}";
                 string HtmlResult = client.UploadString(URI, Action);
             }
         }
@@ -121,11 +122,12 @@ namespace BudgetManager2017.Controllers
         public string JsonStringBody(string content)
         {
             
-            content = jObj.ToString();
+            
+            string URI = "http://image-search9000.herokuapp.com/description";
+            content = client.DownloadString(URI).ToString();
+
             return content;
         }
-
-
 
 
         private void GenerateDB(Transaction dt)
