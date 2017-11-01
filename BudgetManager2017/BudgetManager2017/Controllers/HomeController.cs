@@ -9,12 +9,16 @@ using System.Web;
 using System.Web.Mvc;
 using Fluentx.Mvc;
 
+
 namespace BudgetManager2017.Controllers
 {
+
     public class HomeController : Controller
     {
-        
-        
+        WebClient client = new WebClient();
+        Dictionary<string, object> logger = new Dictionary<string, object>();
+        Dictionary<string, object> jObj = new Dictionary<string, object>();
+
         public ActionResult Index()
         {
             ViewBag.Title = "Fetch Transactions";
@@ -43,6 +47,10 @@ namespace BudgetManager2017.Controllers
             {
                 return RedirectToAction("Description");
             }
+            else if (Command == "Logger")
+            {
+                return RedirectToAction("Logging");
+            }
             return View("TimeSelector");
         }
         
@@ -54,51 +62,69 @@ namespace BudgetManager2017.Controllers
         public ActionResult GeneralInformation()
         {
             Logging();
-
             DAL.Open();
             DAL.Select001();
             DAL.Close();
             var jsonObj = DAL.Transactions;
             return Json(jsonObj, JsonRequestBehavior.AllowGet);
         }
-
-        private void Logging()
+        
+        [HttpGet]
+        public ActionResult Logging()
         {
+            string logged = "User loged in";
+            postLog(logged);
+            return View();
 
         }
-        [HttpGet]
+        [HttpPost]
+        public void postLog(string logged)
+        {
+            string URI = "https://islogapi.herokuapp.com/";
+            string Action = "Action=user logged in";
+            //client.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
+            string HtmlResult = client.UploadString(URI, Action);
+        }
+
+        
+
+[HttpGet]
         public ActionResult Description()
         {
             Dictionary<string, string> descriptId = new Dictionary<string, string>();
-            List<string> Descriptions = new List<string>();
+            List<string> descriptions = new List<string>();
 
             DAL.Open();
-            DAL.ReadDescription(ref Descriptions, ref descriptId);
+            DAL.ReadDescription(ref descriptions, ref descriptId);
             DAL.Close();
-            var jsonObj = descriptId;//Obs jsonObject kan asignes til enten [descriptId] for key value pair eller til [Descriptions] for en enkelt beskrivelse
-            PosDescript(Json(jsonObj));
-
+            var jsonObj = descriptions;//Obs jsonObject kan asignes til enten [descriptId] for key value pair eller til [Descriptions] for en enkelt beskrivelse
+            //string concat = String.Join(" ", Descriptions.ToArray());
+            PostDescript(descriptions);
+            string content="";
+            JsonStringBody(content);
             return Json(jsonObj, JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
-        public ActionResult PosDescript(object jsonObj)
+        public void PostDescript(List<string> descriptions)
         {
-            Dictionary<string, object> jObj = new Dictionary<string, object>();
-            jObj.Add("Description", jsonObj);
+            string URI = "http://image-search9000.herokuapp.com/description";
+            //client.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
 
-            return this.RedirectAndPost("http://image-search9000.herokuapp.com/description", jObj);
+            foreach (string description in descriptions)
+            {
+                string Action = description;
+                string HtmlResult = client.UploadString(URI, Action);
+            }
+        }
+        
+        [HttpGet]
+        public string JsonStringBody(string content)
+        {
+            
+            content = jObj.ToString();
+            return content;
         }
 
-
-            //return Json(jsonObj, JsonRequestBehavior.AllowGet);
-
-
-
-        //List<string> Descriptions = new List<string>();
-        //DAL.Open();
-        //DAL.ReadDescription(ref Descriptions);
-        //DAL.Close();
-        //var jsonObj = Descriptions;
 
 
 
