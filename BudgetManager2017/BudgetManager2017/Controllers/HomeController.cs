@@ -8,16 +8,26 @@ using System.Net.Http;
 using System.Web;
 using System.Web.Mvc;
 using Fluentx.Mvc;
-
+using System.Threading.Tasks;
+using System.Net.Sockets;
+using System.Net.Http.Formatting;
 
 namespace BudgetManager2017.Controllers
 {
-
     public class HomeController : Controller
     {
         WebClient client = new WebClient();
         Dictionary<string, object> logger = new Dictionary<string, object>();
         Dictionary<string, object> jObj = new Dictionary<string, object>();
+
+        private static string imageURL;
+        public static string ImageURL
+        {
+            get { return imageURL; }
+            set { imageURL = value; }
+        }
+
+        public static object Beskrivelse { get; private set; }
 
         public ActionResult Index()
         {
@@ -75,60 +85,56 @@ namespace BudgetManager2017.Controllers
             string logged = "User loged in";
             postLog(logged);
             return View();
-
         }
+
         [HttpPost]
         public void postLog(string logged)
         {
             string URI = "https://islogapi.herokuapp.com/";
             string action = "action=user logged in";
-            //client.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
             string HtmlResult = client.UploadString(URI, action);
         }
 
-        
-
-[HttpGet]
+        [HttpGet]
         public ActionResult Description()
         {
-            Dictionary<string, string> descriptId = new Dictionary<string, string>();
+            Queue<string> descriptId = new Queue<string>();
             List<string> descriptions = new List<string>();
+
+            string content ="";
+            string err = "Application Error: ImageSearch limit has reached.";
+            string ok = $"Got the imageSearch from words: {descriptions}";
 
             DAL.Open();
             DAL.ReadDescription(ref descriptions, ref descriptId);
-            var jsonObj = descriptions;//Obs jsonObject kan asignes til enten [descriptId] for key value pair eller til [Descriptions] for en enkelt beskrivelse
-            //string concat = String.Join(" ", Descriptions.ToArray());
-            PostDescript(descriptions);//Sender data
-            string content="";
-            JsonStringBody(content);//Henter data
-            DAL.Insert(content);
+            getimageHelperAsync(content);
+            //foreach (string item in descriptions)
+            //{
+            //    string description = item;
+            //    getimageHelperAsync(description);
+            //    content = imageURL;
+            //    string id = descriptId.Dequeue();
+            //    DAL.Insert(content, id);
+            //}
             DAL.Close();
-            return Json(jsonObj, JsonRequestBehavior.AllowGet);
-        }
-        [HttpPost]
-        public void PostDescript(List<string> descriptions)
-        {
-            string URI = "http://image-search9000.herokuapp.com/description";
-            //client.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
 
-            foreach (string description in descriptions)
+            if (content==null)
             {
-                string Action = $"Beskrevelse={description}";
-                string HtmlResult = client.UploadString(URI, Action);
+              return Json(err, JsonRequestBehavior.AllowGet);
             }
+            return Json(ok, JsonRequestBehavior.AllowGet);
         }
-        
         [HttpGet]
-        public string JsonStringBody(string content)
+        public static async Task<string> getimageHelperAsync(string description)
         {
-            
-            
-            string URI = "http://image-search9000.herokuapp.com/description";
-            content = client.DownloadString(URI).ToString();
+            var client001 = new HttpClient();
+            //var client001 = new TcpClient();
 
-            return content;
+            HttpResponseMessage response = await client001.GetAsync("http://image-search9000.herokuapp.com/Description?Beskrivelse=" + $"Hest");
+            string result = await response.Content.ReadAsStringAsync();
+            imageURL = result;
+            return imageURL;
         }
-
 
         private void GenerateDB(Transaction dt)
         {

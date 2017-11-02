@@ -90,7 +90,7 @@ namespace BudgetManager2017.DataAccess
             }
         }
 
-        internal static void ReadDescription(ref List<string> descriptions, ref Dictionary<string, string> descriptId)
+        internal static void ReadDescription(ref List<string> descriptions, ref Queue<string> descriptId)
         {
             SqlCommand readCommand = new SqlCommand("SELECT * FROM TRANSACTIONS", connection);
             try
@@ -101,7 +101,7 @@ namespace BudgetManager2017.DataAccess
                 {
                     string id = dataReader["transactionid"].ToString();
                     string descr = dataReader["description"].ToString();
-                    descriptId.Add(id, descr);
+                    descriptId.Enqueue(id);
                     descriptions.Add(descr);
                 }
             }
@@ -113,7 +113,7 @@ namespace BudgetManager2017.DataAccess
 
         }
 
-        internal static void Insert(string content)
+        internal static void Insert(string content, string id)
         {
             SqlCommand create = new SqlCommand("INSERT INTO TRANSACTIONS", connection);
             create.Parameters.Add(CreateParam("@img", content, SqlDbType.Image));
