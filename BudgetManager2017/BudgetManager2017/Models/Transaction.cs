@@ -14,7 +14,13 @@ namespace BudgetManager2017.Models
             get { return transactions; }
             set { transactions = value; }
         }
+        private string img;
 
+        public string Img
+        {
+            get { return img; }
+            set { img = value; }
+        }
 
         public Transaction()
         {

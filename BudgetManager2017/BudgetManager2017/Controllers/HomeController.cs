@@ -46,7 +46,6 @@ namespace BudgetManager2017.Controllers
             else if (Command == "getJson")
             {
                 GenerateDB(dt);
-                
                 return RedirectToAction("Json");
             }
             else if (Command == "JsonData")
@@ -55,15 +54,18 @@ namespace BudgetManager2017.Controllers
             }
             else if (Command == "Description")
             {
-                return RedirectToAction("Description");
+                return RedirectToAction("DescriptionAsync");
             }
             else if (Command == "Logger")
             {
                 return RedirectToAction("Logging");
             }
+             
             return View("TimeSelector");
         }
+
         
+
         public ActionResult Json()
         {
             var jsonObj = DAL.Transactionslist;
@@ -91,36 +93,51 @@ namespace BudgetManager2017.Controllers
         public void postLog(string logged)
         {
             string URI = "https://islogapi.herokuapp.com/";
-            string action = "action=user logged in";
+            string action = $"action={logged}";
+            client.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
             string HtmlResult = client.UploadString(URI, action);
         }
 
         [HttpGet]
-        public ActionResult Description()
+        public async Task<ActionResult> DescriptionAsync()
         {
+            
             Queue<string> descriptId = new Queue<string>();
             List<string> descriptions = new List<string>();
 
             string content ="";
-            string err = "Application Error: ImageSearch limit has reached.";
-            string ok = $"Got the imageSearch from words: {descriptions}";
+            string[] err = { "Application Error: ImageSearch limit reached.","This is an Error Code:403 Unauthorized access!", "Wait a day or two for reset." };
+            string[] ok = {"Status Code 200 OK", "DataBase has been updated with new images, which matches descriptions"};
+            string[] nullSearch = {"There was no descriptions to be searched for.", "Which means that there are no Transactions or database is emty.", "Please try again or create a new transaction in the database"};
 
             DAL.Open();
             DAL.ReadDescription(ref descriptions, ref descriptId);
-            getimageHelperAsync(content);
-            //foreach (string item in descriptions)
-            //{
-            //    string description = item;
-            //    getimageHelperAsync(description);
-            //    content = imageURL;
-            //    string id = descriptId.Dequeue();
-            //    DAL.Insert(content, id);
-            //}
+            DAL.Close();
+            DAL.Open();
+            foreach (string item in descriptions)
+            {
+                string description = item;
+                await getimageHelperAsync(description);
+                content = imageURL;
+                string logged = $"user searched for: {description}";
+                postLog(logged);
+                if (content == "Error Code:403")
+                {
+                    return Json(err, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    string id = descriptId.Dequeue();
+                    DAL.Insert(content, id);
+                    logged = $"ImageUrl: {content}, uploaded to database.";
+                    postLog(logged);
+                }
+            }
             DAL.Close();
 
             if (content==null)
             {
-              return Json(err, JsonRequestBehavior.AllowGet);
+              return Json(nullSearch, JsonRequestBehavior.AllowGet);
             }
             return Json(ok, JsonRequestBehavior.AllowGet);
         }
@@ -130,7 +147,7 @@ namespace BudgetManager2017.Controllers
             var client001 = new HttpClient();
             //var client001 = new TcpClient();
 
-            HttpResponseMessage response = await client001.GetAsync("http://image-search9000.herokuapp.com/Description?Beskrivelse=" + $"Hest");
+            HttpResponseMessage response = await client001.GetAsync("http://image-search9000.herokuapp.com/Description?Beskrivelse=" + $"{description}");
             string result = await response.Content.ReadAsStringAsync();
             imageURL = result;
             return imageURL;

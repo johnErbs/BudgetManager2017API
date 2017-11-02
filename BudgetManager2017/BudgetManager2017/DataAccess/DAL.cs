@@ -26,6 +26,8 @@ namespace BudgetManager2017.DataAccess
             get { return transactionslist; }
             set { transactionslist = value; }
         }
+        
+
 
 
 
@@ -79,8 +81,9 @@ namespace BudgetManager2017.DataAccess
                         DateTime date = dataReader.GetDateTime(2);
                         string description = dataReader.GetString(3);
                         int subID = dataReader.GetInt32(4);
+                        string img = dataReader.GetString(5);
 
-                       transactionslist.Add(new Transaction { TransactionID = id, Amount = amount, Date = date, Description = description, SubCat = subID });
+                        transactionslist.Add(new Transaction { TransactionID = id, Amount = amount, Date = date, Description = description, SubCat = subID, Img = img });
                     }
                 }
             }
@@ -115,17 +118,19 @@ namespace BudgetManager2017.DataAccess
 
         internal static void Insert(string content, string id)
         {
-            SqlCommand create = new SqlCommand("INSERT INTO TRANSACTIONS", connection);
-            create.Parameters.Add(CreateParam("@img", content, SqlDbType.Image));
+                SqlCommand updatecmd = new SqlCommand("UPDATE Transactions SET Images = @content WHERE TransactionID=@id", connection);
+                updatecmd.Parameters.Add(CreateParam("@id", id, SqlDbType.Int));
+                updatecmd.Parameters.Add(CreateParam("@content", content, SqlDbType.VarChar));
 
             try
             {
+                updatecmd.ExecuteNonQuery();
+                
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                throw ex;
             }
         }
 
@@ -148,8 +153,9 @@ namespace BudgetManager2017.DataAccess
                         DateTime date = dataReader.GetDateTime(2);
                         string description = dataReader.GetString(3);
                         int subID = dataReader.GetInt32(4);
+                        string img = dataReader.GetString(5);
 
-                        Transactions.Add(new Transaction { TransactionID = id, Amount = amount, Date = date, Description = description, SubCat = subID });
+                    Transactions.Add(new Transaction { TransactionID = id, Amount = amount, Date = date, Description = description, SubCat = subID, Img=img });
                 }
             }
             catch (Exception ex)
