@@ -1,0 +1,40 @@
+﻿@model BudgetManager2017.Models.Transaction
+
+@{
+    ViewBag.Title = "CreateTransactions";
+}
+
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link href="~/Content/StyleSheet1.css" rel="stylesheet" />
+    <title>CreateForm</title>
+</head>
+<body>
+    <div class="col-md-12" style="background-color: #edeff1;">
+        <div class="header">
+            <center>
+                <h1>Transaction's Platform</h1>
+            </center>
+        </div>
+        <div class="Content">
+            <h2>Opret ny transaktion</h2><br />
+            <div style="width: 80%; margin-left:10%;">
+                @using (Html.BeginForm())
+            {
+                    @*<p>TransactonID:&emsp;&ensp;@Html.TextBoxFor(x => x.TransactionID)</p>*@
+                    <p>Amount:&emsp;&emsp;&emsp;&emsp;@Html.TextBoxFor(x => x.Amount)</p>
+                    @*<p>Date:&emsp;&emsp;&emsp;&emsp;&emsp; @Html.TextBoxFor(x => x.Date, new { @readonly = "Date" })</p>*@
+                    <p>Description: &emsp;&ensp;&thinsp;&thinsp;&thinsp;@Html.TextBoxFor(x => x.Description)</p>
+                    <p>SubcatagoryID: &ensp;@Html.TextBoxFor(x => x.SubCat)</p>
+                    <input type="submit" value="Submit Data" />
+                }
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

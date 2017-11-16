@@ -66,8 +66,27 @@ namespace BudgetManager2017.Controllers
                 
                 return RedirectToAction("socket");
             }
+            else if (Command == "CreateTransactions")
+            {
+                return RedirectToAction("CreateTransactions");
+            }
              
             return View("TimeSelector");
+        }
+
+        [HttpGet]
+        public ActionResult CreateTransations()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult CreateTransactions(Transaction transactionValue)
+        {
+            DAL.Open();
+            DAL.CreateTrans(transactionValue);
+            DAL.Close();
+            return View();
         }
 
         //tester for socket

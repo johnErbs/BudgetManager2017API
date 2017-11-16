@@ -93,6 +93,15 @@ namespace BudgetManager2017.DataAccess
             }
         }
 
+        internal static void CreateTrans(Transaction transactionValue)
+        {
+            SqlCommand createCommand = new SqlCommand("INSERT INTO Transactions(Amount, Date, Description, SubCategoryID) Values(@Amount, @Date, @Description, @SubCategoryID)", connection);
+            createCommand.Parameters.Add(CreateParam("@Amount", transactionValue.Amount, SqlDbType.Float));
+            createCommand.Parameters.Add(CreateParam("@Date", transactionValue.Date, SqlDbType.DateTime));
+            createCommand.Parameters.Add(CreateParam("@Description", transactionValue.Description, SqlDbType.NVarChar));
+            createCommand.Parameters.Add(CreateParam("@SubCategoryID", transactionValue.SubCat, SqlDbType.Int));
+        }
+
         internal static void ReadDescription(ref List<string> descriptions, ref Queue<string> descriptId)
         {
             SqlCommand readCommand = new SqlCommand("SELECT * FROM TRANSACTIONS", connection);
