@@ -1,0 +1,33 @@
+﻿@model BudgetManager2017.Models.Transaction
+
+@{
+    ViewBag.Title = "socket";
+}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    @foreach (string item in ViewBag.Descriptions)
+    {
+        <script>
+            var sock = new WebSocket("ws://cancercancer.herokuapp.com/");
+            //var sock = new WebSocket("ws://localhost:8999");
+
+            sock.onopen = function(event){
+                alert('Socket connected successfully');
+                setTimeout(function(){
+                    sock.send("@item");
+                }, 1000);
+            };
+            sock.onmessage=function(event){
+                console.log(event);
+            };
+        </script>
+    }
+</body>
+</html>

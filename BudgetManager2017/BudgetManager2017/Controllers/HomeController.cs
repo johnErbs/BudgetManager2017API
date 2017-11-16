@@ -16,6 +16,7 @@ namespace BudgetManager2017.Controllers
 {
     public class HomeController : Controller
     {
+       
         WebClient client = new WebClient();
         Dictionary<string, object> logger = new Dictionary<string, object>();
         Dictionary<string, object> jObj = new Dictionary<string, object>();
@@ -60,11 +61,26 @@ namespace BudgetManager2017.Controllers
             {
                 return RedirectToAction("Logging");
             }
+            else if (Command == "dscr")
+            {
+                
+                return RedirectToAction("socket");
+            }
              
             return View("TimeSelector");
         }
 
-        
+        //tester for socket
+        public ActionResult socket()
+        {
+            Queue<string> descriptId = new Queue<string>();
+            List<string> descriptions = new List<string>();
+            ReadDescript(ref descriptions, ref descriptId);
+
+            ViewBag.Descriptions = descriptions;
+
+            return View();
+        }
 
         public ActionResult Json()
         {
@@ -101,38 +117,55 @@ namespace BudgetManager2017.Controllers
         [HttpGet]
         public async Task<ActionResult> DescriptionAsync()
         {
-            
             Queue<string> descriptId = new Queue<string>();
             List<string> descriptions = new List<string>();
-
             string content ="";
             string[] err = { "Application Error: ImageSearch limit reached.","This is an Error Code:403 Unauthorized access!", "Wait a day or two for reset." };
             string[] ok = {"Status Code 200 OK", "DataBase has been updated with new images, which matches descriptions"};
             string[] nullSearch = {"There was no descriptions to be searched for.", "Which means that there are no Transactions or database is emty.", "Please try again or create a new transaction in the database"};
 
-            DAL.Open();
-            DAL.ReadDescription(ref descriptions, ref descriptId);
-            DAL.Close();
-            DAL.Open();
-            foreach (string item in descriptions)
+            ReadDescript(ref descriptions, ref descriptId);
+
+            //Note her sendes der kun en beskrivelse
+            string description = descriptions[2];
+            await getimageHelperAsync(description);
+            content = imageURL;
+            string logged = $"user searched for: {description}";
+            postLog(logged);
+            if (content == "Error Code:403")
             {
-                string description = item;
-                await getimageHelperAsync(description);
-                content = imageURL;
-                string logged = $"user searched for: {description}";
-                postLog(logged);
-                if (content == "Error Code:403")
-                {
-                    return Json(err, JsonRequestBehavior.AllowGet);
-                }
-                else
-                {
-                    string id = descriptId.Dequeue();
-                    DAL.Insert(content, id);
-                    logged = $"ImageUrl: {content}, uploaded to database.";
-                    postLog(logged);
-                }
+                return Json(err, JsonRequestBehavior.AllowGet);
             }
+            else
+            {
+                string id = descriptId.Dequeue();
+                DAL.Open();
+                DAL.Insert(content, id);
+                logged = $"ImageUrl: {content}, uploaded to database.";
+                postLog(logged);
+            }
+
+
+            //DAL.Open();
+            //foreach (string item in descriptions)
+            //{
+            //    string description = item;
+            //    await getimageHelperAsync(description);
+            //    content = imageURL;
+            //    string logged = $"user searched for: {description}";
+            //    postLog(logged);
+            //    if (content == "Error Code:403")
+            //    {
+            //        return Json(err, JsonRequestBehavior.AllowGet);
+            //    }
+            //    else
+            //    {
+            //        string id = descriptId.Dequeue();
+            //        DAL.Insert(content, id);
+            //        logged = $"ImageUrl: {content}, uploaded to database.";
+            //        postLog(logged);
+            //    }
+            //}
             DAL.Close();
 
             if (content==null)
@@ -141,6 +174,15 @@ namespace BudgetManager2017.Controllers
             }
             return Json(ok, JsonRequestBehavior.AllowGet);
         }
+
+        private void ReadDescript(ref List<string> descriptions, ref Queue<string> descriptId)
+        {
+
+            DAL.Open();
+            DAL.ReadDescription(ref descriptions, ref descriptId);
+            DAL.Close();
+        }
+
         [HttpGet]
         public static async Task<string> getimageHelperAsync(string description)
         {
