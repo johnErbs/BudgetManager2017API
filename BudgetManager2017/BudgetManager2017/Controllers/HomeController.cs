@@ -75,7 +75,7 @@ namespace BudgetManager2017.Controllers
         }
 
         [HttpGet]
-        public ActionResult CreateTransations()
+        public ActionResult CreateTransactions()
         {
             return View();
         }

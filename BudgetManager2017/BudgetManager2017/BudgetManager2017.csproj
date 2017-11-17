@@ -336,7 +336,7 @@
     <Content Include="Views\Home\Description.cshtml" />
     <Content Include="Views\Home\Logging.cshtml" />
     <Content Include="Views\Home\socket.cshtml" />
-    <Content Include="Views\Home\CreateTransations.cshtml" />
+    <Content Include="Views\Home\CreateTransactions.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
