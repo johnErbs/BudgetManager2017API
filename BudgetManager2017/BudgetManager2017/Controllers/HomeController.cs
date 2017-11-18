@@ -27,6 +27,7 @@ namespace BudgetManager2017.Controllers
             get { return imageURL; }
             set { imageURL = value; }
         }
+        public bool completeJson { get; set; }
 
         public static object Beskrivelse { get; private set; }
 
@@ -47,9 +48,10 @@ namespace BudgetManager2017.Controllers
             else if (Command == "getJson")
             {
                 GenerateDB(dt);
+                completeJson = false;
                 return RedirectToAction("Json");
             }
-            else if (Command == "JsonData")
+            else if (Command == "Info")
             {
                 return RedirectToAction("GeneralInformation");
             }
@@ -103,8 +105,18 @@ namespace BudgetManager2017.Controllers
 
         public ActionResult Json()
         {
-            var jsonObj = DAL.Transactionslist;
-            return Json(jsonObj, JsonRequestBehavior.AllowGet);
+            object jsonObj;
+
+            if (completeJson==true)
+            {
+                jsonObj = DAL.Transactions;
+                return Json(jsonObj, JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                jsonObj = DAL.Transactionslist;
+                return Json(jsonObj, JsonRequestBehavior.AllowGet);
+            }
         }
         public ActionResult GeneralInformation()
         {
@@ -112,10 +124,12 @@ namespace BudgetManager2017.Controllers
             DAL.Open();
             DAL.Select001();
             DAL.Close();
-            var jsonObj = DAL.Transactions;
-            return Json(jsonObj, JsonRequestBehavior.AllowGet);
+            ViewBag.Transactions = DAL.Transactions;
+            completeJson = true;
+            return View();
         }
         
+
         [HttpGet]
         public ActionResult Logging()
         {
@@ -146,45 +160,44 @@ namespace BudgetManager2017.Controllers
             ReadDescript(ref descriptions, ref descriptId);
 
             //Note her sendes der kun en beskrivelse
-            string description = descriptions[2];
-            await getimageHelperAsync(description);
-            content = imageURL;
-            string logged = $"user searched for: {description}";
-            postLog(logged);
-            if (content == "Error Code:403")
-            {
-                return Json(err, JsonRequestBehavior.AllowGet);
-            }
-            else
-            {
-                string id = descriptId.Dequeue();
-                DAL.Open();
-                DAL.Insert(content, id);
-                logged = $"ImageUrl: {content}, uploaded to database.";
-                postLog(logged);
-            }
-
-
-            //DAL.Open();
-            //foreach (string item in descriptions)
+            //string description = descriptions[2];
+            //await getimageHelperAsync(description);
+            //content = imageURL;
+            //string logged = $"user searched for: {description}";
+            //postLog(logged);
+            //if (content == "Error Code:403")
             //{
-            //    string description = item;
-            //    await getimageHelperAsync(description);
-            //    content = imageURL;
-            //    string logged = $"user searched for: {description}";
-            //    postLog(logged);
-            //    if (content == "Error Code:403")
-            //    {
-            //        return Json(err, JsonRequestBehavior.AllowGet);
-            //    }
-            //    else
-            //    {
-            //        string id = descriptId.Dequeue();
-            //        DAL.Insert(content, id);
-            //        logged = $"ImageUrl: {content}, uploaded to database.";
-            //        postLog(logged);
-            //    }
+            //    return Json(err, JsonRequestBehavior.AllowGet);
             //}
+            //else
+            //{
+            //    string id = descriptId.Dequeue();
+            //    DAL.Open();
+            //    DAL.Insert(content, id);
+            //    logged = $"ImageUrl: {content}, uploaded to database.";
+            //    postLog(logged);
+            //}
+
+            DAL.Open();
+            foreach (string item in descriptions)
+            {
+                string description = item;
+                await getimageHelperAsync(description);
+                content = imageURL;
+                string logged = $"user searched for: {description}";
+                postLog(logged);
+                if (content == "Error Code:403")
+                {
+                    return Json(err, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    string id = descriptId.Dequeue();
+                    DAL.Insert(content, id);
+                    logged = $"ImageUrl: {content}, uploaded to database.";
+                    postLog(logged);
+                }
+            }
             DAL.Close();
 
             if (content==null)
