@@ -3,8 +3,6 @@
     ViewBag.Title = "GeneralInformation";
 }
 
-<h2>GeneralInformation</h2>
-
 <div class="jumbotron">
     <h2>Transactions</h2>
     <p class="lead">Here you can see your transactions:</p>
@@ -29,7 +27,16 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td style=" border: 1px solid black;"><img src="@item.Img" alt="Description" width="42" height="42"></td>
+                        @{
+                            if (item.Img != null && item.Img.Contains("http"))
+                            {
+                                <td style=" border: 1px solid black;"><img src="@item.Img" alt="No Logo" width="42" height="42"></td>
+                            }
+                            else if (!item.Img.Contains("http"))
+                            {
+                                <td style=" border: 1px solid black;"><img src="~/Content/images/noLogo.jpg" alt="No Logo" width="42" height="42"></td>
+                            }
+                        }
                         <td style=" border: 1px solid black;">@item.TransactionID</td>
                         <td style=" border: 1px solid black;">@item.Amount</td>
                         <td style=" border: 1px solid black;">@item.Date</td>

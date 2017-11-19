@@ -29,7 +29,6 @@ namespace BudgetManager2017.Controllers
         }
         public bool completeJson { get; set; }
 
-        public static object Beskrivelse { get; private set; }
 
         public ActionResult Index()
         {

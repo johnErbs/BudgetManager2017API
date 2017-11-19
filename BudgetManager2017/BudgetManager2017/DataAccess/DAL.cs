@@ -100,6 +100,14 @@ namespace BudgetManager2017.DataAccess
             createCommand.Parameters.Add(CreateParam("@Date", transactionValue.Date, SqlDbType.DateTime));
             createCommand.Parameters.Add(CreateParam("@Description", transactionValue.Description, SqlDbType.NVarChar));
             createCommand.Parameters.Add(CreateParam("@SubCategoryID", transactionValue.SubCat, SqlDbType.Int));
+            try
+            {
+                createCommand.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         internal static void ReadDescription(ref List<string> descriptions, ref Queue<string> descriptId)
@@ -155,14 +163,23 @@ namespace BudgetManager2017.DataAccess
 
                 while (dataReader.Read())
                 {
-                    
+                    string img;
+
                         //Addes der til liste fra 1. kollone i TableName.
-                        int id = dataReader.GetInt32(0);
-                        double amount = dataReader.GetDouble(1);
-                        DateTime date = dataReader.GetDateTime(2);
-                        string description = dataReader.GetString(3);
-                        int subID = dataReader.GetInt32(4);
-                        string img = dataReader.GetString(5);
+                    int id = dataReader.GetInt32(0);
+                    double amount = dataReader.GetDouble(1);
+                    DateTime date = dataReader.GetDateTime(2);
+                    string description = dataReader.GetString(3);
+                    int subID = dataReader.GetInt32(4);
+                    if (dataReader.GetString(5)==null)
+                    {
+                        img = "https://n6-img-fp.akamaized.net/free-icon/businessman_318-72886.jpg?size=338c&ext=jpg";
+                    }
+                    else
+                    {
+                        img = dataReader.GetString(5);
+                    }
+                  
 
                     Transactions.Add(new Transaction { TransactionID = id, Amount = amount, Date = date, Description = description, SubCat = subID, Img=img });
                 }
