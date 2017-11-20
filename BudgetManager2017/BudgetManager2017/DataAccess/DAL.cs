@@ -26,10 +26,13 @@ namespace BudgetManager2017.DataAccess
             get { return transactionslist; }
             set { transactionslist = value; }
         }
-        
+        private static string descr;
 
-
-
+        public static string Descr
+        {
+            get { return descr; }
+            set { descr = value; }
+        }
 
         public static void Open()
         {
@@ -43,6 +46,22 @@ namespace BudgetManager2017.DataAccess
                 throw ex;
             }
         }
+        private static int id;
+
+        public static int ID
+        {
+            get { return id; }
+            set { id = value; }
+        }
+        private static string content;
+
+        public static string Content
+        {
+            get { return content; }
+            set { content = value; }
+        }
+
+
 
 
         public static void Close()
@@ -55,7 +74,45 @@ namespace BudgetManager2017.DataAccess
             {
                 throw ex;
             }
+        }
+        public static void selectLast()
+        {
+            SqlCommand LastCmd = new SqlCommand("SELECT TOP 1 * FROM Transactions ORDER BY TransactionID DESC", connection);
 
+            SqlDataReader dr = LastCmd.ExecuteReader();
+
+            try
+            {
+                while (dr.Read())
+                {
+                    ID = dr.GetInt32(0);
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+        }
+
+        public static void UpdateImg()
+        {
+
+            SqlCommand updatecmd = new SqlCommand("UPDATE Transactions SET Images = @content WHERE TransactionID=@id", connection);
+            updatecmd.Parameters.Add(CreateParam("@id", ID, SqlDbType.Int));
+            updatecmd.Parameters.Add(CreateParam("@content", Content, SqlDbType.VarChar));
+
+            try
+            {
+                updatecmd.ExecuteNonQuery();
+
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
         internal static void Select(Transaction transaction)
         {
@@ -108,6 +165,7 @@ namespace BudgetManager2017.DataAccess
             {
                 throw ex;
             }
+            
         }
 
         internal static void ReadDescription(ref List<string> descriptions, ref Queue<string> descriptId)
@@ -119,10 +177,10 @@ namespace BudgetManager2017.DataAccess
 
                 while (dataReader.Read())
                 {
-                    string id = dataReader["transactionid"].ToString();
-                    string descr = dataReader["description"].ToString();
-                    descriptId.Enqueue(id);
-                    descriptions.Add(descr);
+                        string id = dataReader["transactionid"].ToString();
+                        string descr = dataReader["description"].ToString();
+                        descriptId.Enqueue(id);
+                        descriptions.Add(descr);
                 }
             }
             catch (Exception ex)
@@ -133,7 +191,8 @@ namespace BudgetManager2017.DataAccess
 
         }
 
-        internal static void Insert(string content, string id)
+
+        public static void Insert(string content, string id)
         {
                 SqlCommand updatecmd = new SqlCommand("UPDATE Transactions SET Images = @content WHERE TransactionID=@id", connection);
                 updatecmd.Parameters.Add(CreateParam("@id", id, SqlDbType.Int));

@@ -20,6 +20,7 @@ namespace BudgetManager2017.Controllers
         WebClient client = new WebClient();
         Dictionary<string, object> logger = new Dictionary<string, object>();
         Dictionary<string, object> jObj = new Dictionary<string, object>();
+        static bool SingleDescr;
 
         private static string imageURL;
         public static string ImageURL
@@ -83,21 +84,17 @@ namespace BudgetManager2017.Controllers
         [HttpPost]
         public ActionResult CreateTransactions(Transaction transactionValue)
         {
-            socket();
+            DAL.Descr = transactionValue.Description;
             DAL.Open();
             DAL.CreateTrans(transactionValue);
             DAL.Close();
-            return View();
+
+            return RedirectToAction("socket");
         }
 
-        //tester for socket
-        public ActionResult socket()
-        {
-            Queue<string> descriptId = new Queue<string>();
-            List<string> descriptions = new List<string>();
-            ReadDescript(ref descriptions, ref descriptId);
-            ViewBag.Descriptions = descriptions;
 
+        public ActionResult Socket()
+        {
             return View();
         }
 
@@ -207,7 +204,7 @@ namespace BudgetManager2017.Controllers
 
         private void ReadDescript(ref List<string> descriptions, ref Queue<string> descriptId)
         {
-
+           
             DAL.Open();
             DAL.ReadDescription(ref descriptions, ref descriptId);
             DAL.Close();

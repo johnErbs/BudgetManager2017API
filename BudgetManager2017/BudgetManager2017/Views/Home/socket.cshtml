@@ -2,6 +2,8 @@
 
 @{
     ViewBag.Title = "socket";
+    string desription = BudgetManager2017.DataAccess.DAL.Descr;
+
 }
 
 <html lang="en">
@@ -12,22 +14,32 @@
     <title>Document</title>
 </head>
 <body>
-    @foreach (string item in ViewBag.Descriptions)
-    {
+    
         <script>
-            var sock = new WebSocket("ws://cancercancer.herokuapp.com/");
-            //var sock = new WebSocket("ws://localhost:8999");
+                var sock = new WebSocket("ws://cancercancer.herokuapp.com/");
+                //var sock = new WebSocket("ws://localhost:8999");
 
-            sock.onopen = function(event){
-                alert('Socket connected successfully');
-                setTimeout(function(){
-                    sock.send("@item");
-                }, 1000);
-            };
-            sock.onmessage=function(event){
-                console.log(event);
-            };
+                sock.onopen = function(e){
+                    alert('Socket connected successfully');
+                    setTimeout(function(){
+                        sock.send("@desription");
+                    }, 1000);
+                };
+                sock.onmessage = function (e) {
+                    
+                    var server_message = e.data;
+                    console.log(server_message);
+                    @BudgetManager2017.DataAccess.DAL.Content = ""+server_message;
+                    @{ 
+                        BudgetManager2017.DataAccess.DAL.Open();
+                        BudgetManager2017.DataAccess.DAL.selectLast();
+                        BudgetManager2017.DataAccess.DAL.Close();
+                        BudgetManager2017.DataAccess.DAL.Open();
+                        BudgetManager2017.DataAccess.DAL.UpdateImg();
+                        BudgetManager2017.DataAccess.DAL.Close();
+                    }
+                };
+                sock.onclose()
         </script>
-    }
 </body>
 </html>
