@@ -64,7 +64,6 @@ namespace BudgetManager2017.Controllers
             }
             else if (Command == "dscr")
             {
-                
                 return RedirectToAction("socket");
             }
             else if (Command == "CreateTransactions")
@@ -84,6 +83,7 @@ namespace BudgetManager2017.Controllers
         [HttpPost]
         public ActionResult CreateTransactions(Transaction transactionValue)
         {
+            socket();
             DAL.Open();
             DAL.CreateTrans(transactionValue);
             DAL.Close();
@@ -96,7 +96,6 @@ namespace BudgetManager2017.Controllers
             Queue<string> descriptId = new Queue<string>();
             List<string> descriptions = new List<string>();
             ReadDescript(ref descriptions, ref descriptId);
-
             ViewBag.Descriptions = descriptions;
 
             return View();

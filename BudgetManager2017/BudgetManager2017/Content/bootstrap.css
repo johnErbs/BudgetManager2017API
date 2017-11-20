@@ -52,9 +52,9 @@ audio:not([controls]) {
 }
 
 html {
-  font-family: sans-serif;
-  -webkit-text-size-adjust: 100%;
-      -ms-text-size-adjust: 100%;
+    font-family: Courier New;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
 }
 
 body {
@@ -315,8 +315,12 @@ body {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 14px;
     line-height: 1.428571429;
-    color: #bc2e9c;
-    background-color: #c3beb3;
+    color: rgba(0, 0, 0, 0.83);
+    background-image: url('Images/modern-technological-elements-with-transparent-background_1035-7108.jpg');
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+    background-size:cover;
 }
 
 input,
@@ -474,9 +478,9 @@ h6,
 .h4,
 .h5,
 .h6 {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-weight: 500;
-  line-height: 1.1;
+    font-family: "Courier New", Courier New, Courier New, Courier New;
+    font-weight: 500;
+    line-height: 1.1;
 }
 
 h1 small,
@@ -1132,9 +1136,6 @@ pre code {
   .col-md-12 {
     /*width: 100%;*/
     padding: 60px;
-    border-radius: 6px;
-    margin-left: 10px;
-    margin-right: 10px;
   }
   .col-md-push-0 {
     left: auto;
@@ -4940,13 +4941,13 @@ a.list-group-item.active > .badge,
 }
 
 .jumbotron {
-  padding: 30px;
-  margin-bottom: 30px;
-  font-size: 21px;
-  font-weight: 200;
-  line-height: 2.1428571435;
-  color: inherit;
-  background-color: #eeeeee;
+    padding: 30px;
+    margin-bottom: 30px;
+    font-size: 21px;
+    font-weight: 200;
+    line-height: 2.1428571435;
+    color: inherit;
+    background-color: #0000001a;
 }
 
 .jumbotron h1 {
@@ -4959,7 +4960,7 @@ a.list-group-item.active > .badge,
 }
 
 .container .jumbotron {
-  border-radius: 6px;
+  border-radius: 2px;
 }
 
 @media screen and (min-width: 768px) {

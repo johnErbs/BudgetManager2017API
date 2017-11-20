@@ -4,40 +4,46 @@
     ViewBag.Title = "TimeSelector";
 }
 
+<html>
+    <head>
+        <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    </head>
+    <body>
+        <div class="jumbotron">
+            <h2>Transactions</h2>
+            <p class="lead">Here you can see your transactions:</p>
+        </div>
 
+        <div class="row">
+            <div class="col-md-12" style="background-color: #edeff1;">
+                <br />
 
-<div class="jumbotron">
-    <h2>Transactions</h2>
-    <p class="lead">Here you can see your transactions:</p>
-</div>
+                @foreach (var item in ViewBag.Transactions)
+                {
+                    <table style="padding:2%;">
+                        <thead>
+                            <tr>
+                                <th style=" border: 1px solid black;">TransactonID</th>
+                                <th style=" border: 1px solid black;">Amount</th>
+                                <th style=" border: 1px solid black;">Date</th>
+                                <th style=" border: 1px solid black;">Description</th>
+                                <th style=" border: 1px solid black;">SubcatagoryID</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style=" border: 1px solid black;">@item.TransactionID</td>
+                                <td style=" border: 1px solid black;">@item.Amount</td>
+                                <td style=" border: 1px solid black;">@item.Date</td>
+                                <td style=" border: 1px solid black;">@item.Description</td>
+                                <td style=" border: 1px solid black;">@item.SubCat</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br />
+                }
+            </div>
+        </div>
+    </body>
+</html>
 
-<div class="row">
-    <div class="col-md-12" style="background-color: #edeff1;">
-        <br />
-       
-        @foreach (var item in ViewBag.Transactions)
-        {
-            <table style="padding:2%;">
-                <thead>
-                    <tr>
-                        <th style=" border: 1px solid black;">TransactonID</th>
-                        <th style=" border: 1px solid black;">Amount</th>
-                        <th style=" border: 1px solid black;">Date</th>
-                        <th style=" border: 1px solid black;">Description</th>
-                        <th style=" border: 1px solid black;">SubcatagoryID</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td style=" border: 1px solid black;">@item.TransactionID</td>
-                        <td style=" border: 1px solid black;">@item.Amount</td>
-                        <td style=" border: 1px solid black;">@item.Date</td>
-                        <td style=" border: 1px solid black;">@item.Description</td>
-                        <td style=" border: 1px solid black;">@item.SubCat</td>
-                    </tr>
-                </tbody>
-            </table>
-            <br />
-        }
-    </div>
-</div>
