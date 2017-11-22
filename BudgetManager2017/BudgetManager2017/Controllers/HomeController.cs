@@ -92,10 +92,56 @@ namespace BudgetManager2017.Controllers
             return RedirectToAction("socket");
         }
 
-
+        [HttpGet]
         public ActionResult Socket()
         {
             return View();
+        }
+        [HttpPost]
+        public ActionResult Socket(DAL resp, string Command)
+        {
+            string test = DAL.Content;
+            //if (Command == "IMG")
+            //{
+
+            //    DAL.Open();
+            //    DAL.selectLast();
+            //    DAL.Close();
+            //    DAL.Open();
+            //    DAL.UpdateImg();
+            //    DAL.Close();
+            //}
+            return View();
+        }
+
+        [HttpGet]
+        public ActionResult Reciver()
+        {
+
+            return RedirectToAction("URLStarter");
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> URLStarter(string imgUrl)
+        {
+            await GetUrl(imgUrl);
+            return View();
+        }
+        public static async Task<string> GetUrl(string imgUrl)
+        {
+            var client001 = new HttpClient();
+            HttpResponseMessage response = await client001.GetAsync(imgUrl);
+            string result = await response.Content.ReadAsStringAsync();
+            imageURL = result;
+
+            DAL.Open();
+            DAL.selectLast();
+            DAL.Close();
+            DAL.Open();
+            DAL.UpdateImg(imageURL);
+            DAL.Close();
+
+            return imageURL;
         }
 
         public ActionResult Json()
@@ -153,25 +199,6 @@ namespace BudgetManager2017.Controllers
             string[] nullSearch = {"There was no descriptions to be searched for.", "Which means that there are no Transactions or database is emty.", "Please try again or create a new transaction in the database"};
 
             ReadDescript(ref descriptions, ref descriptId);
-
-            //Note her sendes der kun en beskrivelse
-            //string description = descriptions[2];
-            //await getimageHelperAsync(description);
-            //content = imageURL;
-            //string logged = $"user searched for: {description}";
-            //postLog(logged);
-            //if (content == "Error Code:403")
-            //{
-            //    return Json(err, JsonRequestBehavior.AllowGet);
-            //}
-            //else
-            //{
-            //    string id = descriptId.Dequeue();
-            //    DAL.Open();
-            //    DAL.Insert(content, id);
-            //    logged = $"ImageUrl: {content}, uploaded to database.";
-            //    postLog(logged);
-            //}
 
             DAL.Open();
             foreach (string item in descriptions)

@@ -34,18 +34,6 @@ namespace BudgetManager2017.DataAccess
             set { descr = value; }
         }
 
-        public static void Open()
-        {
-            try
-            {
-                connection = new SqlConnection(ConfigurationManager.ConnectionStrings["TransactionDB"].ConnectionString);
-                connection.Open();
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
         private static int id;
 
         public static int ID
@@ -59,6 +47,26 @@ namespace BudgetManager2017.DataAccess
         {
             get { return content; }
             set { content = value; }
+        }
+        private string resp;
+
+        public string Resp
+        {
+            get { return resp; }
+            set { resp = value; }
+        }
+
+        public static void Open()
+        {
+            try
+            {
+                connection = new SqlConnection(ConfigurationManager.ConnectionStrings["TransactionDB"].ConnectionString);
+                connection.Open();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
 
@@ -96,9 +104,9 @@ namespace BudgetManager2017.DataAccess
 
         }
 
-        public static void UpdateImg()
+        public static void UpdateImg(string imageURL)
         {
-
+            Content = imageURL;
             SqlCommand updatecmd = new SqlCommand("UPDATE Transactions SET Images = @content WHERE TransactionID=@id", connection);
             updatecmd.Parameters.Add(CreateParam("@id", ID, SqlDbType.Int));
             updatecmd.Parameters.Add(CreateParam("@content", Content, SqlDbType.VarChar));
@@ -106,8 +114,6 @@ namespace BudgetManager2017.DataAccess
             try
             {
                 updatecmd.ExecuteNonQuery();
-
-
             }
             catch (Exception ex)
             {

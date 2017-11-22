@@ -4,42 +4,53 @@
     ViewBag.Title = "socket";
     string desription = BudgetManager2017.DataAccess.DAL.Descr;
 
+    BudgetManager2017.DataAccess.DAL resp = new BudgetManager2017.DataAccess.DAL();
 }
 
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-</head>
-<body>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Document</title>
+    </head>
+    <body>
+
+        @using (Html.BeginForm("Socket", "Home", FormMethod.Post, new { id = "submitForm" }))
+        {
+            //<p id="resp" name="servResp"></p>
+            <img id="myImg" src="compman.gif">
+
+            <button type="submit" id="btnCreateTable" name="Command" value="IMG" onclick="setUrl()">Update Image</button>
+        }
     
         <script>
-                var sock = new WebSocket("ws://cancercancer.herokuapp.com/");
-                //var sock = new WebSocket("ws://localhost:8999");
 
-                sock.onopen = function(e){
-                    alert('Socket connected successfully');
-                    setTimeout(function(){
+
+            var sock = new WebSocket("ws://cancercancer.herokuapp.com/");
+            sock.onopen = function (e) {
+                alert('Socket connected successfully');
+                setTimeout(function(){
                         sock.send("@desription");
-                    }, 1000);
-                };
-                sock.onmessage = function (e) {
-                    
-                    var server_message = e.data;
-                    console.log(server_message);
-                    @BudgetManager2017.DataAccess.DAL.Content = ""+server_message;
-                    @{ 
-                        BudgetManager2017.DataAccess.DAL.Open();
-                        BudgetManager2017.DataAccess.DAL.selectLast();
-                        BudgetManager2017.DataAccess.DAL.Close();
-                        BudgetManager2017.DataAccess.DAL.Open();
-                        BudgetManager2017.DataAccess.DAL.UpdateImg();
-                        BudgetManager2017.DataAccess.DAL.Close();
-                    }
-                };
-                sock.onclose()
+                    }, 500);
+            };
+
+            sock.onmessage = function (e) {
+                var server_message = e.data;
+                var res = document.getElementById("myImg");
+                res.src = `${server_message}`;
+            };
+
+            var SockResp = new WebSocket();
+            SockResp.
+
+            sock.onclose()
         </script>
-</body>
+
+        
+
+
+       
+        
+    </body>
 </html>
