@@ -92,47 +92,41 @@ namespace BudgetManager2017.Controllers
             return RedirectToAction("socket");
         }
 
-        [HttpGet]
+      
         public ActionResult Socket()
         {
             return View();
         }
-        [HttpPost]
-        public ActionResult Socket(DAL resp, string Command)
-        {
-            string test = DAL.Content;
-            //if (Command == "IMG")
-            //{
+        //[HttpPost]
+        //public ActionResult Socket(DAL resp, string Command)
+        //{
+        //    string test = DAL.Content;
+        //    //if (Command == "IMG")
+        //    //{
 
-            //    DAL.Open();
-            //    DAL.selectLast();
-            //    DAL.Close();
-            //    DAL.Open();
-            //    DAL.UpdateImg();
-            //    DAL.Close();
-            //}
-            return View();
-        }
+        //    //    DAL.Open();
+        //    //    DAL.selectLast();
+        //    //    DAL.Close();
+        //    //    DAL.Open();
+        //    //    DAL.UpdateImg();
+        //    //    DAL.Close();
+        //    //}
+        //    return View();
+        //}
 
-        [HttpGet]
-        public ActionResult Reciver()
+        
+
+
+
+        public ActionResult ReciverAsync(string imgUrl)
         {
 
-            return RedirectToAction("URLStarter");
-        }
+            HttpListener listener = new HttpListener();
+            listener.Prefixes.Add("https://cancercancer.herokuapp.com/");
+            listener.Start();
+            HttpListenerContext ctx = listener.GetContext();
+            imgUrl = ctx.Request.HttpMethod + " " + ctx.Request.Url;
 
-        [HttpPost]
-        public async Task<ActionResult> URLStarter(string imgUrl)
-        {
-            await GetUrl(imgUrl);
-            return View();
-        }
-        public static async Task<string> GetUrl(string imgUrl)
-        {
-            var client001 = new HttpClient();
-            HttpResponseMessage response = await client001.GetAsync(imgUrl);
-            string result = await response.Content.ReadAsStringAsync();
-            imageURL = result;
 
             DAL.Open();
             DAL.selectLast();
@@ -141,8 +135,11 @@ namespace BudgetManager2017.Controllers
             DAL.UpdateImg(imageURL);
             DAL.Close();
 
-            return imageURL;
+            return View();
+         
         }
+
+     
 
         public ActionResult Json()
         {

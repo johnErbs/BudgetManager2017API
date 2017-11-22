@@ -386,6 +386,7 @@
     <Content Include="Views\Home\CreateTransactions.cshtml" />
     <Content Include="Scripts\jquery-1.12.4.min.map" />
     <Content Include="Views\Home\Reciver.cshtml" />
+    <Content Include="Views\Home\ReciverAsync.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
