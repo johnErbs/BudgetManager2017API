@@ -93,8 +93,8 @@ namespace BudgetManager2017.Controllers
             DAL.CreateTrans(transactionValue);
             DAL.Close();
 
-            string imgUrl = "";
-            UpdateIMG(imgUrl);
+            //string imgUrl = "";
+            //UpdateIMG(imgUrl);
 
             return RedirectToAction("socket");
         }
