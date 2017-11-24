@@ -104,9 +104,9 @@ namespace BudgetManager2017.DataAccess
 
         }
 
-        public static void UpdateImg(string imageURL)
+        public static void UpdateImg(string imgUrl)
         {
-            Content = imageURL;
+            Content = imgUrl;
             SqlCommand updatecmd = new SqlCommand("UPDATE Transactions SET Images = @content WHERE TransactionID=@id", connection);
             updatecmd.Parameters.Add(CreateParam("@id", ID, SqlDbType.Int));
             updatecmd.Parameters.Add(CreateParam("@content", Content, SqlDbType.VarChar));

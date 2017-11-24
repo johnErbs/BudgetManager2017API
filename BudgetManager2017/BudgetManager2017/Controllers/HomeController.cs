@@ -11,6 +11,9 @@ using Fluentx.Mvc;
 using System.Threading.Tasks;
 using System.Net.Sockets;
 using System.Net.Http.Formatting;
+using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
+using System.Text;
 
 namespace BudgetManager2017.Controllers
 {
@@ -84,10 +87,14 @@ namespace BudgetManager2017.Controllers
         [HttpPost]
         public ActionResult CreateTransactions(Transaction transactionValue)
         {
+
             DAL.Descr = transactionValue.Description;
             DAL.Open();
             DAL.CreateTrans(transactionValue);
             DAL.Close();
+
+            string imgUrl = "";
+            UpdateIMG(imgUrl);
 
             return RedirectToAction("socket");
         }
@@ -114,27 +121,50 @@ namespace BudgetManager2017.Controllers
         //    return View();
         //}
 
-        
-
-
-
-        public ActionResult ReciverAsync(string imgUrl)
+        public static void UpdateIMG(string imgUrl)
         {
+            var factory = new ConnectionFactory() { HostName = "amqp://1doFhxuC:WGgk9kXy_wFIFEO0gwB_JiDuZm2-PrlO@black-ragwort-810.bigwig.lshift.net:10803/SDU53lDhKShK" };
+            using (var connection = factory.CreateConnection())
+            using (var channel = connection.CreateModel())
+            {
+                channel.ExchangeDeclare(exchange: "Rapid", type: "direct");
 
-            HttpListener listener = new HttpListener();
-            listener.Prefixes.Add("https://cancercancer.herokuapp.com/");
-            listener.Start();
-            HttpListenerContext ctx = listener.GetContext();
-            imgUrl = ctx.Request.HttpMethod + " " + ctx.Request.Url;
+                var queueName = channel.QueueDeclare().QueueName;
+                channel.QueueBind(queue: queueName,
+                                  exchange: "Rapid",
+                                  routingKey: "ImageResponse");
+
+                Console.WriteLine(" [*] Waiting for logs.");
+
+                var consumer = new EventingBasicConsumer(channel);
+                consumer.Received += (model, ea) =>
+                {
+                    var body = ea.Body;
+                    imgUrl = body.ToString();
+                    var message = Encoding.UTF8.GetString(body);
+                    Console.WriteLine(" [x] {0}", message);
+                };
+                channel.BasicConsume(queue: queueName,
+                                     autoAck: true,
+                                     consumer: consumer);
+
+                Console.WriteLine(" Press [enter] to exit.");
+                Console.ReadLine();
+            }
 
             DAL.Open();
             DAL.selectLast();
             DAL.Close();
             DAL.Open();
-            DAL.UpdateImg(imageURL);
+            DAL.UpdateImg(imgUrl);
             DAL.Close();
 
-            return View();
+
+            //HttpListener listener = new HttpListener();
+            //listener.Prefixes.Add("https://cancercancer.herokuapp.com/");
+            //listener.Start();
+            //HttpListenerContext ctx = listener.GetContext();
+            //imgUrl = ctx.Request.HttpMethod + " " + ctx.Request.Url;
         }
 
      
