@@ -127,7 +127,6 @@ namespace BudgetManager2017.Controllers
             HttpListenerContext ctx = listener.GetContext();
             imgUrl = ctx.Request.HttpMethod + " " + ctx.Request.Url;
 
-
             DAL.Open();
             DAL.selectLast();
             DAL.Close();
@@ -136,7 +135,6 @@ namespace BudgetManager2017.Controllers
             DAL.Close();
 
             return View();
-         
         }
 
      
@@ -158,7 +156,7 @@ namespace BudgetManager2017.Controllers
         }
         public ActionResult GeneralInformation()
         {
-            Logging();
+            //Logging();
             DAL.Open();
             DAL.Select001();
             DAL.Close();
@@ -168,83 +166,83 @@ namespace BudgetManager2017.Controllers
         }
         
 
-        [HttpGet]
-        public ActionResult Logging()
-        {
-            string logged = "User loged in";
-            postLog(logged);
-            return View();
-        }
+        //[HttpGet]
+        //public ActionResult Logging()
+        //{
+        //    string logged = "User loged in";
+        //    postLog(logged);
+        //    return View();
+        //}
 
-        [HttpPost]
-        public void postLog(string logged)
-        {
-            string URI = "https://islogapi.herokuapp.com/";
-            string action = $"action={logged}";
-            client.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
-            string HtmlResult = client.UploadString(URI, action);
-        }
+        //[HttpPost]
+        //public void postLog(string logged)
+        //{
+        //    string URI = "https://islogapi.herokuapp.com/";
+        //    string action = $"action={logged}";
+        //    client.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
+        //    string HtmlResult = client.UploadString(URI, action);
+        //}
 
-        [HttpGet]
-        public async Task<ActionResult> DescriptionAsync()
-        {
-            Queue<string> descriptId = new Queue<string>();
-            List<string> descriptions = new List<string>();
-            string content ="";
-            string[] err = { "Application Error: ImageSearch limit reached.","This is an Error Code:403 Unauthorized access!", "Wait a day or two for reset." };
-            string[] ok = {"Status Code 200 OK", "DataBase has been updated with new images, which matches descriptions"};
-            string[] nullSearch = {"There was no descriptions to be searched for.", "Which means that there are no Transactions or database is emty.", "Please try again or create a new transaction in the database"};
+        //[HttpGet]
+        //public async Task<ActionResult> DescriptionAsync()
+        //{
+        //    Queue<string> descriptId = new Queue<string>();
+        //    List<string> descriptions = new List<string>();
+        //    string content ="";
+        //    string[] err = { "Application Error: ImageSearch limit reached.","This is an Error Code:403 Unauthorized access!", "Wait a day or two for reset." };
+        //    string[] ok = {"Status Code 200 OK", "DataBase has been updated with new images, which matches descriptions"};
+        //    string[] nullSearch = {"There was no descriptions to be searched for.", "Which means that there are no Transactions or database is emty.", "Please try again or create a new transaction in the database"};
 
-            ReadDescript(ref descriptions, ref descriptId);
+        //    ReadDescript(ref descriptions, ref descriptId);
 
-            DAL.Open();
-            foreach (string item in descriptions)
-            {
-                string description = item;
-                await getimageHelperAsync(description);
-                content = imageURL;
-                string logged = $"user searched for: {description}";
-                postLog(logged);
-                if (content == "Error Code:403")
-                {
-                    return Json(err, JsonRequestBehavior.AllowGet);
-                }
-                else
-                {
-                    string id = descriptId.Dequeue();
-                    DAL.Insert(content, id);
-                    logged = $"ImageUrl: {content}, uploaded to database.";
-                    postLog(logged);
-                }
-            }
-            DAL.Close();
+        //    DAL.Open();
+        //    foreach (string item in descriptions)
+        //    {
+        //        string description = item;
+        //        await getimageHelperAsync(description);
+        //        content = imageURL;
+        //        string logged = $"user searched for: {description}";
+        //        postLog(logged);
+        //        if (content == "Error Code:403")
+        //        {
+        //            return Json(err, JsonRequestBehavior.AllowGet);
+        //        }
+        //        else
+        //        {
+        //            string id = descriptId.Dequeue();
+        //            DAL.Insert(content, id);
+        //            logged = $"ImageUrl: {content}, uploaded to database.";
+        //            postLog(logged);
+        //        }
+        //    }
+        //    DAL.Close();
 
-            if (content==null)
-            {
-              return Json(nullSearch, JsonRequestBehavior.AllowGet);
-            }
-            return Json(ok, JsonRequestBehavior.AllowGet);
-        }
+        //    if (content==null)
+        //    {
+        //      return Json(nullSearch, JsonRequestBehavior.AllowGet);
+        //    }
+        //    return Json(ok, JsonRequestBehavior.AllowGet);
+        //}
 
-        private void ReadDescript(ref List<string> descriptions, ref Queue<string> descriptId)
-        {
+        //private void ReadDescript(ref List<string> descriptions, ref Queue<string> descriptId)
+        //{
            
-            DAL.Open();
-            DAL.ReadDescription(ref descriptions, ref descriptId);
-            DAL.Close();
-        }
+        //    DAL.Open();
+        //    DAL.ReadDescription(ref descriptions, ref descriptId);
+        //    DAL.Close();
+        //}
 
-        [HttpGet]
-        public static async Task<string> getimageHelperAsync(string description)
-        {
-            var client001 = new HttpClient();
-            //var client001 = new TcpClient();
+        //[HttpGet]
+        //public static async Task<string> getimageHelperAsync(string description)
+        //{
+        //    var client001 = new HttpClient();
+        //    //var client001 = new TcpClient();
 
-            HttpResponseMessage response = await client001.GetAsync("http://image-search9000.herokuapp.com/Description?Beskrivelse=" + $"{description}");
-            string result = await response.Content.ReadAsStringAsync();
-            imageURL = result;
-            return imageURL;
-        }
+        //    HttpResponseMessage response = await client001.GetAsync("http://image-search9000.herokuapp.com/Description?Beskrivelse=" + $"{description}");
+        //    string result = await response.Content.ReadAsStringAsync();
+        //    imageURL = result;
+        //    return imageURL;
+        //}
 
         private void GenerateDB(Transaction dt)
         {

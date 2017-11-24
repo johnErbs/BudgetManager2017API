@@ -158,11 +158,14 @@ namespace BudgetManager2017.DataAccess
 
         internal static void CreateTrans(Transaction transactionValue)
         {
-            SqlCommand createCommand = new SqlCommand("INSERT INTO Transactions(Amount, Date, Description, SubCategoryID) Values(@Amount, @Date, @Description, @SubCategoryID)", connection);
+            string noImg = "http://www.fotonova.dk/wp-content/themes/rebecca/images/noimage_2.gif";
+
+            SqlCommand createCommand = new SqlCommand("INSERT INTO Transactions(Amount, Date, Description, SubCategoryID, Images) Values(@Amount, @Date, @Description, @SubCategoryID, @Images)", connection);
             createCommand.Parameters.Add(CreateParam("@Amount", transactionValue.Amount, SqlDbType.Float));
             createCommand.Parameters.Add(CreateParam("@Date", transactionValue.Date, SqlDbType.DateTime));
             createCommand.Parameters.Add(CreateParam("@Description", transactionValue.Description, SqlDbType.NVarChar));
             createCommand.Parameters.Add(CreateParam("@SubCategoryID", transactionValue.SubCat, SqlDbType.Int));
+            createCommand.Parameters.Add(CreateParam("@Images", noImg, SqlDbType.VarChar));
             try
             {
                 createCommand.ExecuteNonQuery();
