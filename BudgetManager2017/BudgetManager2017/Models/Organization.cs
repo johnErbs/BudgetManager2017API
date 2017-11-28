@@ -23,7 +23,7 @@ namespace BudgetManager2017.Models
             set { name = value; }
         }
 
-        private int FK_budgetId;
+        private int FK_budgetid;
 
         public int FK_BudgetId
         {
