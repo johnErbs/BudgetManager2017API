@@ -23,6 +23,15 @@ namespace BudgetManager2017.Models
             set { name = value; }
         }
 
+        private int FK_budgetId;
+
+        public int FK_BudgetId
+        {
+            get { return FK_budgetId; }
+            set { FK_budgetId = value; }
+        }
+
+
 
     }
 }
